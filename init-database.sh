@@ -28,20 +28,20 @@ NC='\033[0m' # No Color
 
 if ! [ -d ~/projects/docker-services/mysql8-service/data/lara_db/ ] ;
 then
-  docker exec DockApp_db8 mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "create database $DB_DATABASE;"
+  docker exec Service_db8 mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "create database $DB_DATABASE;"
   echo -e "${GREEN}database " $DB_DATABASE " created successfully...${NC}"
 else
   echo -e "${RED}database " $DB_DATABASE " is already exists...${NC}"
 fi
 
-docker exec DockApp_db8 mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "$CREATE_USER" 2>/dev/null
+docker exec ${MYSQL8_CONTAINER_NAME} mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "$CREATE_USER" 2>/dev/null
 if [ $? != 0 ]; then
   echo -e "${RED}User " $DB_USERNAME "@'%' is already exists...${NC}"
 else
   echo -e "${GREEN}User " $DB_USERNAME "@'%' created successfully...${NC}"
 fi
 
-docker exec DockApp_db8 mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "$USER_GRANT" 2>/dev/null
+docker exec ${MYSQL8_CONTAINER_NAME} mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "$USER_GRANT" 2>/dev/null
 
-docker exec DockApp_db8 mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "show databases;" 2>/dev/null
+docker exec ${MYSQL8_CONTAINER_NAME} mysql -uroot -p${MYSQL8_ROOT_PASSWORD} -e "show databases;"
 
