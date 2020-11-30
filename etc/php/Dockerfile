@@ -40,6 +40,7 @@ RUN if [ "${PHP_VER_FPM}" = "7.4" ]; then \
    freetype-dev \
    libjpeg-turbo-dev \
    libpng-dev && \
+   docker-php-ext-install zip && \
    docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
    docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd; \
 fi
@@ -49,13 +50,16 @@ RUN if [ "${PHP_VER_FPM}" = "7.2" ]; then \
     freetype \
     libjpeg-turbo-dev \
     libpng-dev && \
+    docker-php-ext-configure zip --with-libzip && \
+    docker-php-ext-install zip && \
     docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ && \
     docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd; \
 fi
 
 # Install extensions
 #RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl
-RUN docker-php-ext-install pdo_mysql sockets zip exif pcntl
+#RUN docker-php-ext-install pdo_mysql sockets zip exif pcntl
+RUN docker-php-ext-install pdo_mysql sockets exif pcntl
 
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
