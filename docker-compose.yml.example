@@ -13,7 +13,8 @@ services:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - ${APP_PATH}:/var/www/html
     networks:
-      laravel-net:
+      - laravel-net
+      - proxy
 
   # PHP-FPM
   php:
@@ -23,15 +24,16 @@ services:
         ADD_ALIASES: ${ADD_ALIASES}
         INSTALL_XDEBUG: ${INSTALL_XDEBUG}
         PHP_VER_FPM: ${PHP_VER_FPM}
-#    depends_on:
-#      - mailhog
     container_name: ${PHP_CONTAINER_NAME}
     restart: unless-stopped
     volumes:
       - ./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ${APP_PATH}:/var/www/html
     networks:
-      laravel-net:
+      - laravel-net
+      - mysql8
+      - proxy
+      - mailer
 
   # Node.js
   node:
@@ -43,10 +45,18 @@ services:
     working_dir: /var/www/html
     tty: true
     networks:
-      laravel-net:
+      - laravel-net
 
 # Networks
 networks:
   laravel-net:
+    name: laravel-net
+  mysql8:
     external:
-      name: services-net
+      name: mysql8
+  proxy:
+    external:
+      name: proxy
+  mailer:
+    external:
+      name: mailer
