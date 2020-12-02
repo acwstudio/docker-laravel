@@ -13,7 +13,7 @@ services:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - ${APP_PATH}:/var/www/html
     networks:
-      - cv-net
+      - this-net
       - proxy
 
   # PHP-FPM
@@ -30,7 +30,7 @@ services:
       - ./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ${APP_PATH}:/var/www/html
     networks:
-      - cv-net
+      - this-net
 #      - mysql57
 #      - mysql8
       - mailer
@@ -45,12 +45,12 @@ services:
     working_dir: /var/www/html
     tty: true
     networks:
-      - cv-net
+      - this-net
 
 # Networks
 networks:
-  cv-net:
-    name: cv-net
+  this-net:
+    name: this-net
 #  mysql57:
 #    name: mysql57
 #  mysql8:
