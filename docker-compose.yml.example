@@ -13,7 +13,7 @@ services:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - ${APP_PATH}:/var/www/html
     networks:
-      - laravel-net
+      - cv-net
       - proxy
 
   # PHP-FPM
@@ -30,9 +30,8 @@ services:
       - ./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ${APP_PATH}:/var/www/html
     networks:
-      - laravel-net
-      - mysql8
-      - proxy
+      - cv-net
+      - mysql57
       - mailer
 
   # Node.js
@@ -45,18 +44,15 @@ services:
     working_dir: /var/www/html
     tty: true
     networks:
-      - laravel-net
+      - cv-net
 
 # Networks
 networks:
-  laravel-net:
-    name: laravel-net
-  mysql8:
-    external:
-      name: mysql8
+  cv-net:
+    name: cv-net
+  mysql57:
+    name: mysql57
   proxy:
-    external:
-      name: proxy
+    name: proxy
   mailer:
-    external:
-      name: mailer
+    name: mailer
