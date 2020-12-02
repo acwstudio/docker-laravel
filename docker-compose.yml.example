@@ -31,7 +31,8 @@ services:
       - ${APP_PATH}:/var/www/html
     networks:
       - cv-net
-      - mysql57
+#      - mysql57
+#      - mysql8
       - mailer
 
   # Node.js
@@ -50,8 +51,10 @@ services:
 networks:
   cv-net:
     name: cv-net
-  mysql57:
-    name: mysql57
+#  mysql57:
+#    name: mysql57
+#  mysql8:
+#    name: mysql8
   proxy:
     name: proxy
   mailer:
