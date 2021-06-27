@@ -13,8 +13,10 @@ set -o allexport
 source .env
 set +o allexport
 
-IP_PHP_CONTAINER=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $PHP_CONTAINER_NAME)
-echo $IP_PHP_CONTAINER
+PHP_CONTAINER_NAME="${APP_NAME}-php-${PHP_VER_FPM}"
+
+IP_PHP_CONTAINER=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$PHP_CONTAINER_NAME")
+echo "$IP_PHP_CONTAINER"
 
 CREATE_USER="create USER '${DB_USERNAME}'@'%' identified by '${DB_PASSWORD}';"
 USER_GRANT="grant all privileges on ${DB_DATABASE}.* to ${DB_USERNAME}@'%';"
