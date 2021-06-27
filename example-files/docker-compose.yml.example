@@ -57,5 +57,5 @@ networks:
 #    name: mysql8
   proxy:
     name: proxy
-  mailer:
+  mailhog:
     name: mailhog
