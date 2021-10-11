@@ -31,45 +31,30 @@ services:
       - ${APP_PATH}:/var/www/html
     networks:
       - this-net
-#      - mysql57
-#      - mysql8
+      - mysql57
+      - mysql8
       - mailhog
 
   # Node.js
-  node:
-    image: node:alpine
-    container_name: ${APP_NAME}-node
-    restart: unless-stopped
-    volumes:
-      - ${APP_PATH}:/var/www/html
-    working_dir: /var/www/html
-    tty: true
-    networks:
-      - this-net
-
-  # Elasticsearch
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-    container_name: ${APP_NAME}-elasticsearch
-    restart: unless-stopped
-    environment:
-      - discovery.type=single-node
-    ports:
-      - 9200:9200
-      - 9300:9300
-    volumes:
-      - sailelasticsearch:/usr/share/elasticsearch/data
-    networks:
-      - this-net
+#  node:
+#    image: node:alpine
+#    container_name: ${APP_NAME}-node
+#    restart: unless-stopped
+#    volumes:
+#      - ${APP_PATH}:/var/www/html
+#    working_dir: /var/www/html
+#    tty: true
+#    networks:
+#      - this-net
 
 # Networks
 networks:
   this-net:
     name: this-net
-#  mysql57:
-#    name: mysql57
-#  mysql8:
-#    name: mysql8
+  mysql57:
+    name: mysql57
+  mysql8:
+    name: mysql8
   proxy:
     name: proxy
   mailhog:

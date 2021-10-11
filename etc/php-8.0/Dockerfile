@@ -2,51 +2,67 @@ FROM php:8.0-fpm-alpine
 
 WORKDIR /var/www/html
 
-# Install Additional dependencies
-RUN apk update && apk add --no-cache $PHPIZE_DEPS \
-    build-base shadow nano curl gcc git bash oniguruma-dev libzip-dev gnu-libiconv \
-#    php8 \
-#    php8-fpm \
-#    php8-common \
-#    php8-pdo \
-#    php8-pdo_mysql \
-#    php8-mysqli \
-#    php8-mcrypt \
-#    php8-mbstring \
-#    php8-xml \
-#    php8-openssl \
-#    php8-json \
-#    php8-phar \
-#    php8-zip \
-#    php8-gd \
-#    php8-dom \
-#    php8-session \
-#    php8-zlib \
-#    php8-iconv \
-    php8-intl
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-RUN apk update && apk add --no-cache \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev && \
-    docker-php-ext-install zip && \
-    docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
-    docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd;
+RUN apk add --no-cache \
+    coreutils \
+    gettext \
+    php8-fpm \
+    php8-ctype \
+    php8-curl \
+    php8-dom \
+    php8-gd \
+    php8-iconv \
+    php8-json \
+    php8-intl \
+    php8-fileinfo\
+    php8-mbstring \
+    php8-opcache \
+    php8-openssl \
+    php8-pdo \
+    php8-pdo_mysql \
+    php8-mysqli \
+    php8-xml \
+    php8-xsl \
+    php8-zlib \
+    php8-phar \
+    php8-tokenizer \
+    php8-session \
+    php8-simplexml \
+    php8-zip \
+    php8-xmlwriter \
+    php8-sodium \
+    php8-pecl-apcu \
+    php8-redis \
+    php8-pcntl \
+    php8-exif \
+    php8-sockets \
+    make \
+    nano \
+    curl
 
-# Install extensions
-#RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl
-#RUN docker-php-ext-install pdo_mysql sockets zip exif pcntl
-RUN docker-php-ext-install pdo_mysql sockets exif pcntl
+# Enable php8-xdebug if $PHP_XDEBUG_MODE is not empty
+#ARG PHP_XDEBUG_MODE=off
+#ARG PHP_XDEBUG_CLIENT_PORT=5902
+#ARG PHP_XDEBUG_CLIENT_HOST=host.docker.internal
+#COPY xdebug.ini  /etc/php8/conf.d/xdebug.ini.template
+#RUN if [[ "$PHP_XDEBUG_MODE" != "" ]]; then \
+#        apk add --no-cache php8-pecl-xdebug; \
+#        export PHP_XDEBUG_MODE=$PHP_XDEBUG_MODE; \
+#        export PHP_XDEBUG_CLIENT_PORT=$PHP_XDEBUG_CLIENT_PORT; \
+#        export PHP_XDEBUG_CLIENT_HOST=$PHP_XDEBUG_CLIENT_HOST; \
+#        envsubst < /etc/php8/conf.d/xdebug.ini.template > /etc/php8/conf.d/xdebug.ini; \
+#    fi
+#RUN rm -f /etc/php8/conf.d/xdebug.ini.template
 
-RUN pecl install -o -f redis \
-&&  rm -rf /tmp/pear \
-&&  docker-php-ext-enable redis
-
-ENV LD_PRELOAD="/usr/lib/preloadable_libiconv.so php-fpm8 php"
-
+RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions gd xdebug pdo_mysql sockets exif pcntl redis
 
 # Install PHP Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN apk add --update nodejs npm \
+    && npm install --global yarn
 
 # Remove Cache
 RUN rm -rf /var/cache/apk/*
