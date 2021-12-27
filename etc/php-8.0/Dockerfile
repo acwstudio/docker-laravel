@@ -56,7 +56,7 @@ RUN apk add --no-cache \
 #RUN rm -f /etc/php8/conf.d/xdebug.ini.template
 
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions gd xdebug pdo_mysql sockets exif pcntl redis
+    install-php-extensions gd xdebug pdo_mysql sockets exif pcntl redis imagick
 
 # Install PHP Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
