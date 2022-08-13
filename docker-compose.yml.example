@@ -11,51 +11,43 @@ services:
       - "${PORT_HTTPS}:443"
     volumes:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
-      - ${APP_PATH}:/var/www/html
+      - ./${APP_PATH}:/var/www/html
     networks:
       - this-net
-      - proxy
+      - proxy # for reverse proxy
 
   # PHP-FPM
   php:
     build:
       context: ./etc/php-${PHP_VER_FPM}
-#      args:
-#       ADD_ALIASES: ${ADD_ALIASES}
-#        INSTALL_XDEBUG: ${INSTALL_XDEBUG}
-#        PHP_VER_FPM: ${PHP_VER_FPM}
     container_name: ${APP_NAME}-php-${PHP_VER_FPM}
     restart: unless-stopped
+    image: ${APP_NAME}-php-fpm${PHP_VER_FPM}:${APP_NAME}
+    environment:
+      - "ENV_SUBSTITUTION_ENABLE=true"
+      - "PHP_MEMORY_LIMIT=512"
+      - "PHP_FPM_LISTEN=${PHP_FPM_LISTEN}"
+      - "PHP_SESSION_GC_MAXLIFETIME=7200"
+    expose:
+      - "9090"
     volumes:
-      - ./etc/php-${PHP_VER_FPM}/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ${APP_PATH}:/var/www/html
+#      - ./etc/php-${PHP_VER_FPM}/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./${APP_PATH}:/var/www/html
     networks:
       - this-net
-      - mysql57
-      - mysql8
-      - mailhog
-
-  # Node.js
-#  node:
-#    image: node:alpine
-#    container_name: ${APP_NAME}-node
-#    restart: unless-stopped
-#    volumes:
-#      - ${APP_PATH}:/var/www/html
-#    working_dir: /var/www/html
-#    tty: true
-#    networks:
-#      - this-net
+      - mysql57 # for mysql 5.7 service
+      - mysql8  # for mysql 8 service
+      - mailhog # for mailhog service
 
 # Networks
 networks:
   this-net:
     name: this-net
   mysql57:
-    name: mysql57
+    name: mysql57 # for mysql 5.7 service
   mysql8:
-    name: mysql8
+    name: mysql8  # for mysql 8 service
   proxy:
-    name: proxy
+    name: proxy   # for reverse proxy
   mailhog:
-    name: mailhog
+    name: mailhog # for mailhog service
